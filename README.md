@@ -1,3 +1,3 @@
 ## RI_smartphone
-#oi
+# oi
 Projeto de RI 2019.2 (smartphones)
