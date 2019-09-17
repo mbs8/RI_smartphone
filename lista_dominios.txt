@@ -1,16 +1,16 @@
 americanas.com.br (590mil produtos) - ERRO
 shoptime.com.br (580mil produtos) - ERRO
 submarino.com.br (580mil produtos) - ERRO
-magazineluiza.com.br (cerca de 100mil produtos)
-casasbahia.com.br (cerca de 3mil produtos)
-extra.com.br (cerca 3mil produtos)
-pontofrio.com.br (cerca de 3mil produtos)
-saraiva.com.br (2mil produtos)
-amazon.com.br (cerca de mil produtos)
-ricardoeletro.com.br (cerca de 800 produtos)
-kabum.com.br (cerca de 450 produtos)
-br.gearbest.com (cerca de 300 produtos)
-ibyte.com.br (cerca de 150 produtos)
-fastshop.com.br 
+magazineluiza.com.br (cerca de 100mil produtos) - OK
+casasbahia.com.br (cerca de 3mil produtos) - ERRO
+extra.com.br (cerca 3mil produtos) - ERRO
+pontofrio.com.br (cerca de 3mil produtos) - ERRO 
+saraiva.com.br (2mil produtos) - OK
+amazon.com.br (cerca de mil produtos) - OK
+ricardoeletro.com.br (cerca de 800 produtos) - OK
+kabum.com.br (cerca de 450 produtos) - OK
+br.gearbest.com (cerca de 300 produtos) - ERRO
+ibyte.com.br (cerca de 150 produtos) - OK
+fastshop.com.br - ERRO
 
 obs: Quantidade de produtos de cada site listada na categoria de smartphones
