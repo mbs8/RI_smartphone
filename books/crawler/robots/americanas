@@ -1,0 +1,47 @@
+User-agent: *
+
+Disallow: /avaliacao
+Disallow: /parceiros
+Disallow: /product-description
+Disallow: /portal
+Disallow: /garantia
+Disallow: /estaticapop
+Disallow: /search
+Disallow: /incluir_prime
+
+Disallow: */busca*filtro=*
+Disallow: */busca/*/f/*
+Disallow: */busca/*/m/*
+Disallow: */busca/*/l/*
+Disallow: */busca/*/c/*
+
+Disallow: */f/tag
+
+Disallow: *hotsite/*filtro*
+Disallow: *landingpage/*filtro*
+
+Disallow: *{"id":*{"id":*{"id":*{"id":*
+Disallow: */f/*/*/
+
+Allow: */pneus/f/marca-*/altura-perfil-*/aro-*/largura-mm-*5$
+Allow: */pneus/f/marca-*/altura-perfil-*/aro-*/largura-mm-*0$
+Allow: */pneus/f/altura-perfil-*/aro-*/largura-mm-*5$
+Allow: */pneus/f/altura-perfil-*/aro-*/largura-mm-*0$
+
+Disallow: */g/*
+Disallow: */f/*discount-range*
+Disallow: */f/*preco-
+Disallow: */f/*entrega-prime*
+Disallow: */f/*delivery*prime*
+Disallow: */f/*entrega-ready*
+Disallow: */f/*delivery*ready*
+
+Disallow: */f/*categoria*-NÃÂ£o*
+Disallow: */f/*categoria*-Sim*
+Disallow: */f/*marca-SEM-MARCA*
+
+Disallow: /*cage.html
+
+#0
+
+#Mon Dec 10 18:12:26 -02 2018

@@ -1,0 +1,14 @@
+# Disallow all crawlers access to certain pages. 
+ User-agent: * 
+
+Disallow: loja.saraiva.com.br
+Disallow: loja.saraiva.com.br/*
+ Disallow: /img/* 
+ Disallow: /account/* 
+ Disallow: /login/* 
+ Disallow: /checkout/* 
+ Disallow: /busca/* 
+ Disallow: /quick-view/* 
+ Disallow: /espiar/* 
+
+ Sitemap: https://www.saraiva.com.br/sitemap.xml

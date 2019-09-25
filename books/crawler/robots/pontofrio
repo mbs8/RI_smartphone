@@ -1,0 +1,14 @@
+User-Agent: *
+Disallow: /Site/
+Disallow: /site/
+Disallow: /Control/SkuDescricaoExterna.aspx?idSku=
+Disallow: /*?*prodresumido=1
+Disallow: /crawler.aspx
+noindex: /*?*emailCliente
+noindex: /Lojista/15/
+noindex: /Lojista/16/
+noindex: /Lojista/10037/
+noindex: /*?*Ordenacao
+noindex: /*?*Filtro=*_L*
+noindex: /*?*Filtro=*_J*
+noindex: /IntegracaoSige/
