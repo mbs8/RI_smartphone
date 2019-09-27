@@ -1,4 +1,10 @@
+import re
 import numpy as np
+from tqdm import tqdm
+import pathlib
+from bs4 import BeautifulSoup
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
 
 
 def to_ascii(string):
@@ -29,3 +35,45 @@ def html_to_np(table):
             col_text  = ''.join(col_text) # it should not change anything
             result[-1].append(col_text)
     return np.array(result)
+
+def pages_to_matrix(pages):
+    X_data, y_data = [], []
+    for page in tqdm(pages):
+
+        stem  = pathlib.Path(page).stem
+        y     = int(stem.split('_')[1])
+        with open(page,"r") as f:
+            lines = f.readlines()
+            doc   = '\n'.join(lines)
+
+        s = BeautifulSoup(doc, "html.parser")
+
+        head_text, att = '', ''
+        if s.head is not None:
+            head_text = s.head.title.find_all(text=True)
+
+        if len(s.find_all("table")) > 0:              
+            table       = max(s.find_all("table"),key=len)
+            np_table    = (html_to_np(table))
+
+            if len(np_table.shape)>1 and  np_table.shape[1] > 1:
+                att = np_table[:,0]#, np_table[:,1]
+
+        X = ' '.join(head_text) + ' '+ ' '.join(att)
+
+        regex = re.compile('[^a-zA-Z ]')
+        X     = regex.sub(' ', X)
+
+        X_data.append(X)
+        y_data.append(y)
+    return np.array(X_data), np.array(y_data)
+
+def get_counts(X):
+    count_vect = CountVectorizer()
+    X_train_counts = count_vect.fit_transform(X)
+    return X_train_counts
+
+def counts_to_tfidf(X_train_counts):
+    tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
+    X_train_tf = tf_transformer.transform(X_train_counts)
+    return X_train_tf
