@@ -1,16 +1,35 @@
-americanas.com.br (590mil produtos) - ERRO
-shoptime.com.br (580mil produtos) - ERRO
-submarino.com.br (580mil produtos) - ERRO
-magazineluiza.com.br (cerca de 100mil produtos) - OK
-casasbahia.com.br (cerca de 3mil produtos) - ERRO
-extra.com.br (cerca 3mil produtos) - ERRO
-pontofrio.com.br (cerca de 3mil produtos) - ERRO 
-saraiva.com.br (2mil produtos) - OK
-amazon.com.br (cerca de mil produtos) - OK
-ricardoeletro.com.br (cerca de 800 produtos) - OK
-kabum.com.br (cerca de 450 produtos) - OK
-br.gearbest.com (cerca de 300 produtos) - ERRO
-ibyte.com.br (cerca de 150 produtos) - OK
-fastshop.com.br - ERRO
+Usando:
+https://www.magazineluiza.com.br (cerca de 100mil produtos) - OK
+https://www.saraiva.com.br (2mil produtos) - OK
+https://www.amazon.com.br (cerca de mil produtos) - OK
+https://www.ricardoeletro.com.br (cerca de 800 produtos) - OK
+https://www.kabum.com.br (cerca de 450 produtos) - OK
+https://www.ibyte.com.br (cerca de 150 produtos) - OK
+https://www.cissamagazine.com.br - OK
+https://www.promobit.com.br - OK
+https://www.havan.com.br - OK
+https://www.taqi.com.br - OK
+
+Reserva:
+https://www.avenida.com.br - OK 
+https://www.colombo.com.br - OK (talvez nao tenha links suficiente)
+
+Impossibilitados de acessar:
+https://www.americanas.com.br (590mil produtos) - ERRO
+https://www.shoptime.com.br (580mil produtos) - ERRO
+https://www.submarino.com.br (580mil produtos) - ERRO
+https://www.casasbahia.com.br (cerca de 3mil produtos) - ERRO
+https://www.extra.com.br (cerca 3mil produtos) - ERRO
+https://www.pontofrio.com.br (cerca de 3mil produtos) - ERRO 
+https://www.br.gearbest.com (cerca de 300 produtos) - ERRO
+https://www.fastshop.com.br - ERRO
+https://www.eletrum.com.br - ERRO
+https://www.shopfacil.com.br/ - ERRO
+https://www.motorola.com.br - ERRO
+https://www.multilaser.com.br - ERRO
+https://www.soubarato.com.br - ERRO
+https://www.kalunga.com.br - ERRO
+
+
 
 obs: Quantidade de produtos de cada site listada na categoria de smartphones
