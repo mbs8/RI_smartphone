@@ -1,0 +1,32 @@
+User-agent: *
+
+Allow: *.css
+Allow: *.js
+
+Disallow: /Redirect/*
+Disallow: /Index/politica-de-privacidade/
+Disallow: /Index/termos/
+Disallow: /Central/*
+Disallow: /central/*
+Disallow: /Promocoes/nova-oferta
+Disallow: /promocoes/nova-oferta
+Disallow: /Promocoes/buscar/*
+Disallow: /promocoes/buscar/*
+Disallow: /home/configuracoes
+Disallow: /Home/configuracoes
+Disallow: /home/atividades
+Disallow: /Home/atividades
+Disallow: /home/ver-perfil/*
+Disallow: /Home/ver-perfil/*
+Disallow: /Reviews/novo-review/
+Disallow: /reviews/novo-review/
+Disallow: /Buscar/*
+Disallow: /buscar/*
+Disallow: /Reviews/novo-review
+Disallow: /reviews/novo-review
+Disallow: /sorteio/
+Disallow: /Sorteio/
+Disallow: /sorteio/*
+Disallow: /Sorteio/*
+Disallow: /@*
+
