@@ -111,3 +111,6 @@ venv.bak/
 
 #all the .html files
 *.html
+
+#all the .zip files
+*.zip
