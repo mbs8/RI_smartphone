@@ -108,3 +108,6 @@ venv.bak/
 
 #all .csv files
 *.csv
+
+#all the .html files
+*.html
