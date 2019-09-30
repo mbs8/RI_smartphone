@@ -1,8 +1,8 @@
 Usando:
 https://www.magazineluiza.com.br (cerca de 100mil produtos) - OK
-https://www.saraiva.com.br (2mil produtos) - OK
+https://www.colombo.com.br - OK 
 https://www.amazon.com.br (cerca de mil produtos) - OK
-https://www.ricardoeletro.com.br (cerca de 800 produtos) - OK
+https://www.avenida.com.br - OK
 https://www.kabum.com.br (cerca de 450 produtos) - OK
 https://www.ibyte.com.br (cerca de 150 produtos) - OK
 https://www.cissamagazine.com.br - OK
@@ -11,8 +11,8 @@ https://www.havan.com.br - OK
 https://www.taqi.com.br - OK
 
 Reserva:
-https://www.avenida.com.br - OK 
-https://www.colombo.com.br - OK (talvez nao tenha links suficiente)
+https://www.ricardoeletro.com.br (cerca de 800 produtos) - OK
+
 
 Impossibilitados de acessar:
 https://www.americanas.com.br (590mil produtos) - ERRO
@@ -29,6 +29,7 @@ https://www.motorola.com.br - ERRO
 https://www.multilaser.com.br - ERRO
 https://www.soubarato.com.br - ERRO
 https://www.kalunga.com.br - ERRO
+https://www.saraiva.com.br (2mil produtos) - Não tem mais celulares
 
 
 

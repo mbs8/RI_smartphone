@@ -105,3 +105,12 @@ venv.bak/
 
 #mac .DS_Store
 .DS_Store
+
+#all .csv files
+*.csv
+
+#all the .html files
+*.html
+
+#all the .zip files
+*.zip
