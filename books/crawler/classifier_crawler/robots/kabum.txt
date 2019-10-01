@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /cgi-local/kabum3/minha_conta/
+Disallow: /kabum3/ad/
+Disallow: /kabum3/home/
+Disallow: /manager/
+Disallow: /cgi-local/site/minha_conta/
+Disallow: /cgi-local/site/carrinho/
+Disallow: /cgi-local/site/login/
+User-agent: Googlebot
+Disallow:
+User-agent: Googlebot-image
+Disallow:
+Sitemap: https://www.kabum.com.br/sitemap.xml

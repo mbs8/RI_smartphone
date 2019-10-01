@@ -1,11 +1,11 @@
 import re
 import numpy as np
-from tqdm import tqdm
+from tqdm import tqdm_notebook as tqdm
 import pathlib
 from bs4 import BeautifulSoup
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-
+from sklearn.preprocessing import MinMaxScaler
 
 def to_ascii(string):
     latin_dict = \
@@ -37,11 +37,15 @@ def html_to_np(table):
     return np.array(result)
 
 def pages_to_matrix(pages):
-    X_data, y_data = [], []
-    for page in tqdm(pages):
+    X_data, idx_array = [], []
+    invalid_count = 0
+    for idx, page in enumerate(tqdm(pages)):
 
         stem  = pathlib.Path(page).stem
-        y     = int(stem.split('_')[1])
+        
+        if not pathlib.Path(page).exists():
+            invalid_count += 1
+            continue
         with open(page,"r") as f:
             lines = f.readlines()
             doc   = '\n'.join(lines)
@@ -49,24 +53,24 @@ def pages_to_matrix(pages):
         s = BeautifulSoup(doc, "html.parser")
 
         head_text, att = '', ''
-        if s.head is not None:
+        if s.head is not None and s.head.title is not None:
             head_text = s.head.title.find_all(text=True)
 
         if len(s.find_all("table")) > 0:              
             table       = max(s.find_all("table"),key=len)
             np_table    = (html_to_np(table))
 
-            if len(np_table.shape)>1 and  np_table.shape[1] > 1:
-                att = np_table[:,0]#, np_table[:,1]
-
+            if len(np_table.shape)>1 and  np_table.shape[1] >= 1:
+                att = np_table.ravel()#, np_table[:,1]
         X = ' '.join(head_text) + ' '+ ' '.join(att)
 
         regex = re.compile('[^a-zA-Z ]')
         X     = regex.sub(' ', X)
 
         X_data.append(X)
-        y_data.append(y)
-    return np.array(X_data), np.array(y_data)
+        idx_array.append(idx)
+    print(f"Invalid Links {invalid_count}")
+    return np.array(X_data), np.array(idx_array)
 
 def get_counts(X):
     count_vect = CountVectorizer()
@@ -77,3 +81,11 @@ def counts_to_tfidf(X_train_counts):
     tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
     X_train_tf = tf_transformer.transform(X_train_counts)
     return X_train_tf
+
+class DenseTransformer(MinMaxScaler):
+
+    def fit(self, X, y=None, **fit_params):
+        return self
+
+    def transform(self, X, y=None, **fit_params):
+        return X.todense()
