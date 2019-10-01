@@ -1,0 +1,18 @@
+User-agent: * 
+
+ Disallow: /img/* 
+ Disallow: /account/* 
+ Disallow: /login/* 
+ Disallow: /checkout/* 
+ Disallow: /espiar/* 
+ Disallow: /checkout/
+ Disallow: /wishlist/
+ Disallow: /cart/add?sku=*
+ Disallow: /*?addtolista=true
+ Disallow: /*productClusterSearchableIds*
+ Disallow: *q=*
+ Disallow: *PS=*
+ Noindex: /buscapagina/* 
+  Noindex: /_secure/account
+
+ Sitemap: https://www.avenida.com.br/sitemap.xml
