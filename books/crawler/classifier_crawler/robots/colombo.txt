@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /pesquisa
+Disallow: /email
+Disallow: /xml
+Disallow: /calculaFreteItem
+Disallow: /calculaFrenteBrinde
+Disallow: /calculaFreteAgregado
+Disallow: /cestaCompras.do
+Disallow: /hotsite
+Disallow: /promo
+Disallow: *.pdf
+Sitemap: https://www.colombo.com.br/sitemap.xml
