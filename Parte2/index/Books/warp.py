@@ -22,15 +22,6 @@ import requests
 from lxml import etree
 import re
 
-most_frequents = {
-    'price':['preço', 'preco'],
-    'model':['modelo'],
-    'ram':['memoria ram', 'ram', 'memória RAM'],
-    'hd':['armazenamento interno', 'memória interna', 'memoria interna', 'interna'],
-    'screen':['tamanho da tela', 'tela', 'tamanho do display', 'display', 'tamanho', 'tamanho (tela principal)'],
-    'color':['cor']
-}
-
 
 latin_dict = \
             {'\\u00e1':'a', '\\u00e0':'a', '\\u00e2':'a', '\\u00e3':'a', '\\u00e4':'a', '\\u00c1':'A', '\\u00c0':'A', 
@@ -108,312 +99,15 @@ def np_to_dict(table, fields_dict):
     return new_dict
 
 
-def get_fields_amazon(html_page):
-    fields_amazon = {
-            'Preço': '',
-            'Sistema operacional': '',
-            'RAM': '',
-            'Capacidade de armazenamento digital': '',
-            'Modelo': '',
-            'Cor': '',  
-            'Tamanho da tela':'',
-            'Avaliações de clientes': ''
-           }
-    
-    parser = etree.HTMLParser()
-    XPATH_TABLE1 = """//*[@id="prodDetails"]/div[2]/div[1]/div/div[2]/div/div/table/tbody/tr"""
-    XPATH_TABLE2 = """//*[@id="prodDetails"]/div[2]/div[2]/div/div[2]/div/div/table/tbody/tr"""
-    XPATH_AVAL = """//*[@id="prodDetails"]/div[2]/div[2]/div/div[2]/div/div/table/tbody/tr[10]/td[2]/span/span[3]/a/text()"""
-    PRICE = """//*[@id="price"]/table/tr/td/span[1]/text()"""
-    tree = etree.parse(html_page, parser)
-    RAW_TABLE1 = tree.xpath(XPATH_TABLE1)
-    RAW_TABLE2 = tree.xpath(XPATH_TABLE2)
-    RAW_AVAL = tree.xpath(XPATH_AVAL)
-    RAW_PRICE = tree.xpath(PRICE)
-    
-    try:
-        fields_amazon['Preço'] = RAW_PRICE[0]
-    except:
-        pass
-    
-    try:
-        fields_amazon = parse_table_amazon(fields_amazon, RAW_TABLE1)
-        fields_amazon = parse_table_amazon(fields_amazon, RAW_TABLE2)
-    except:
-        pass
-    
-    try:
-        fields_amazon['Avaliações de clientes'] = RAW_AVAL[0].strip()
-    except:
-        pass
-                
-    return fields_amazon
-
-def parse_table_amazon(fields, table):
-    try:
-        for row in table:
-            for key in fields:
-                att = row[0].text.replace(" ", "")
-                loss = nomr_l(key, att)
-                if(loss < 0.3):
-                    value = row[1].text
-                    fields[key] = value
-    except:
-        pass
-    
-    return fields
-
-def get_fields_taqi(html_page):
-    fields_taqi = {
-            'Preço': '',
-            'Sistema operacional': '',
-            'Memória RAM': '',
-            'Memória Interna': '',
-            'Modelo': '',
-            'Cor': '',  
-            'Tamanho':'',
-            'Avaliações de clientes': ''
-           }
-    
-    parser = etree.HTMLParser()
-    XPATH_DD = """//*[@id="descricaoproduto"]/div[2]/span/p/span/text()"""
-    PRICE = """//*[@id="lowPrice"]"""
-    tree = etree.parse(html_page, parser)
-    RAW_DD = tree.xpath(XPATH_DD)
-    RAW_PRICE = tree.xpath(PRICE)
-    
-    try:
-        fields_taqi['Preço'] = RAW_PRICE[0].text
-    except:
-        pass
-    
-    
-    for line in RAW_DD:
-        try:
-            att, value = line.split(":")
-            if(value[-1] == "."):
-                value = value[:-1]
-            for key in fields_taqi:
-                loss = nomr_l(key, att)
-                if(loss < 0.2):
-                    fields_taqi[key] = value
-        except:
-            pass
-                
-    return fields_taqi
-
-def get_fields_havan(html_page):
-    fields_havan = {
-            'Preço': '',
-            'Sistema operacional': '',
-            'Memória RAM': '',
-            'Armazenamento Total': '',
-            'Modelo': '',
-            'Cor': '',  
-            'Tamanho da tela':'',
-            'Avaliações de clientes': ''
-           }
-    
-    parser = etree.HTMLParser()
-    XPATH_DD = """//*[@id="description"]/div/div/text()"""
-    PRICE = """//*[@id="maincontent"]/div[2]/div/div[1]/div[2]/div[3]/span/span/span/text()"""
-    
-    tree = etree.parse(html_page, parser)
-    RAW_DD = tree.xpath(XPATH_DD)
-    RAW_PRICE = tree.xpath(PRICE)
-    
-    if (len(RAW_PRICE) >= 1):
-        fields_havan['Preço'] = RAW_PRICE[0]
-        
-    for line in RAW_DD:
-        try:
-            att, value = line.split(":")
-            if(value[-1] == "."):
-                value = value[:-1]
-            for key in fields_havan:
-                loss = nomr_l(key, att)
-                if(loss < 0.2):
-                    fields_havan[key] = value
-        except:
-            pass
-
-    return fields_havan
-
-def get_fields_luiza(html_page):
-
-    fields_luiza = {
-            'Preço': '',
-            'Sistema operacional': '',
-            'Memória RAM': '',
-            'Memória': '',
-            'Modelo': '',
-            'Cor': '',  
-            'Tamanho da tela':'',
-            'Avaliações de clientes': '',
-            'Marca' : ''
-           }
-    
-    parser = etree.HTMLParser()
-    XPATH_TABLE1 = """//*[@id="anchor-description"]/div/table[1]/tr/td/table/tr"""
-    XPATH_TABLE2 = """//*[@id="anchor-description"]/div/table[2]/tr/td/table/tr"""
-    PRICE = """/html/body/div[3]/div[5]/div[1]/div[4]/div[2]/div[4]/div/div/div/span"""
-    tree = etree.parse(html_page, parser)
-    RAW_TABLE1 = tree.xpath(XPATH_TABLE1)
-    RAW_TABLE2 = tree.xpath(XPATH_TABLE2)
-    RAW_PRICE = tree.xpath(PRICE)
-    
-    if(len(RAW_PRICE) >= 2):
-        fields_luiza["Preço"] = "{} {}".format(RAW_PRICE[0].text, RAW_PRICE[1].text) 
-    
-    
-    fields_luiza = parse_table_luiza(fields_luiza, RAW_TABLE1)
-    fields_luiza = parse_table_luiza(fields_luiza, RAW_TABLE2)
-                
-    return fields_luiza
-
-def parse_table_luiza(fields, table):
-    try:
-        for row in table:
-            for key in fields:
-                att = row[0].text.replace(" ", "")
-                loss = nomr_l(key, att)
-                if(loss < 0.3):
-                    value = row[1].text
-                    fields[key] = value
-    except:
-        pass
-    return fields
-
-def get_fields_ibyte(html_page):
-    fields_ibyte = {
-            'Preço': '',
-            'Sistema operacional': '',
-            'Memória RAM(GB)': '',
-            'Memória Total Interna (GB)': '',
-            'Modelo': '',
-            'Cor': '',  
-            'Tamanho (Tela Principal)':'',
-            'Avaliações de clientes': '',
-            'Marca' : ''
-           }
-    
-    parser = etree.HTMLParser()
-    XPATH_DD = """//*[@id="descricao"]/table/tbody/tr"""
-    PRICE = """//*[@id="product_addtocart_form"]/div[3]/div[1]/div/div/p[2]"""
-    tree = etree.parse(html_page, parser)
-    RAW_DD = tree.xpath(XPATH_DD)
-    RAW_PRICE = tree.xpath(PRICE)
-    
-    try:
-        fields_ibyte['Preço'] = RAW_PRICE[0][1].text.replace("\n", "").replace(" ", "")
-    except:
-        pass
-    
-    try:
-        for row in RAW_DD:
-            if(len(row) == 3):
-                att = row[1][0].text
-                value  = row[2].text
-                for key in fields_ibyte.keys():
-                    loss = nomr_l(key, att)
-                    if loss < 0.2:
-                        fields_ibyte[key] = value
-    except:
-        pass
-
-    return fields_ibyte
-
-
-def get_fields_avenida(html_page):
-    fields_avenida = {'Preço': '',
-        'Sistema operacional': '',
-        'Memória RAM': '',
-        'Memória Interna': '',
-        'Modelo': '',
-        'Cor': '',  
-        'Tamanho do Display':'',
-        'Avaliações de clientes': '',
-        'Marca' : ''
-       }
-
-    parser = etree.HTMLParser()
-    XPATH_DD = """//*[@id="caracteristicas"]/table"""
-    PRICE = """//*[@id="product-content"]/div[2]/div[1]/div[2]/div/div[3]/div/p/em/strong"""
-    tree = etree.parse(html_page, parser)
-    RAW_DD = tree.xpath(XPATH_DD)
-    RAW_DD = RAW_DD[0]
-    RAW_PRICE = tree.xpath(PRICE)
-    RAW_PRICE = RAW_PRICE
-    
-    try:
-        fields_avenida['Preço'] = RAW_PRICE[1].text
-    except:
-        pass
-    try:
-        for key in fields_avenida.keys():
-            for element in RAW_DD:
-                loss = nomr_l(element[0].text, key)
-                if loss < 0.4:
-                    fields_avenida[key] = element[1].text
-    except:
-        pass
-
-    return fields_avenida
-
-def get_fields_cissamagazine(html_page):
-    fields_cissamagazine = {
-            'Preço': '',
-            'Sistema operacional': '',
-            'Memória RAM': '',
-            'Memória Interna': '',
-            'Modelo': '',
-            'Cor': '',  
-            'Tamanho da tela':'',
-            'Avaliações de clientes': '',
-            'Marca' : ''
-           }
-
-    parser = etree.HTMLParser()
-    XPATH_DD = r"""//*[@id="caracteristicas"]/div[2]/div/dl/span/dd/text()"""
-    XPATH_DT = r"""//*[@id="caracteristicas"]/div[2]/div/dl/span/dt/text()"""
-    PRICE = """//*[@id="content-price-product"]/div[1]/div[2]/div/span[1]/span[1]/text()"""
-    tree = etree.parse(html_page, parser)
-    RAW_DD = tree.xpath(XPATH_DD)
-    RAW_DT = tree.xpath(XPATH_DT)
-    RAW_PRICE = tree.xpath(PRICE)
-    
-    for p in RAW_PRICE:
-        if len(p):
-            price = (re.findall("R\$ \d*.\d{1,5}\,\d{1,3}", str(p)))
-            if len(price):
-                fields_cissamagazine["Preço"] = price[0]
-
-
-    try:
-        for p in zip(RAW_DT, RAW_DD):
-            for key in fields_cissamagazine.keys():
-                loss = nomr_l(p[0], key)
-                if loss < 0.2:
-                    fields_cissamagazine[key] = p[1]
-    except:
-        pass
-
-    return fields_cissamagazine
-
-
-
-
-
-#####################################################################################################
 most_frequents = {
     'price':['preço', 'preco'],
-    'model':['modelo'],
-    'ram':['memoria ram', 'ram', 'memória RAM'],
+    'model':['modelo', 'Modelos compatíveis'],
+    'ram':['memoria ram', 'ram', 'memória RAM','Tamanho da memória RAM instalada'],
     'hd':['armazenamento interno', 'memória interna', 'memoria interna', 'interna', 'Interna total compartilhada',
-          'Memória ROM (Flash) (Armaz. Interno)', 'Memória ROM'],
+          'Memória ROM (Flash) (Armaz. Interno)', 'Memória ROM','Capacidade de armazenamento digital'],
     'screen':['tamanho da tela', 'tela', 'tamanho do display', 'display', 'tamanho', 'tamanho (tela principal)'],
-    'color':['cor']
 }
+
 geral_fields = {
             'price':'',
             'model':'',
@@ -545,4 +239,277 @@ def get_fields_colombo(html_page):
                         fields[key] = att_path[idx+1].strip().split('\n')[0]
     except Exception as e: print(e)
                     
+    return fields
+
+def get_fields_cissamagazine(html_page):
+
+    def get_price(fields, X_path, tree, verbose=False):
+        path = tree.xpath(X_path)
+        for p in path:
+            if len(p):
+                price = (re.findall("R\$ \d*.\d{1,5}\,\d{1,3}", str(p)))
+                if len(price):
+                    fields["price"] = price[0]
+
+
+    fields = geral_fields.copy()
+
+    parser = etree.HTMLParser()
+    XPATH_DD = r"""//*[@id="caracteristicas"]/div[2]/div/dl/span/dd/text()"""
+    XPATH_DT = r"""//*[@id="caracteristicas"]/div[2]/div/dl/span/dt/text()"""
+    PRICE = """//*[@id="content-price-product"]/div[1]/div[2]/div/span[1]/span[1]/text()"""
+
+    #XPATH_DD = """//*[@id="caracteristicas"]/div[2]/div"""
+    tree = etree.parse(html_page, parser)
+    RAW_DD = tree.xpath(XPATH_DD)
+    RAW_DT = tree.xpath(XPATH_DT)
+
+    get_price(fields, PRICE, tree)
+
+    try:
+        for p in zip(RAW_DT, RAW_DD):
+            for key in fields.keys():
+                for key_name in most_frequents[key]:
+                    loss = nomr_l(p[0], key_name)
+                    #print(p[0], key_name)
+                    if loss < 0.2:
+                        fields[key] = p[1]
+                        break
+    except Exception as e: print(e)
+    return (fields)
+
+def get_fields_avenida(html_page):
+    
+    def get_price(fields, X_path, tree, verbose=False):
+        path = tree.xpath(X_path)
+        if len(path):
+            fields['price'] = path[1].text
+
+    def get_att(fields, X_path, tree):
+        path = tree.xpath(X_path)[0]
+        for key in fields.keys():
+            for key_name in most_frequents[key]:
+                for element in path:
+                    loss = nomr_l(element[0].text, key_name)
+                    if loss < 0.4:
+                        fields[key] = element[1].text
+                        break
+
+
+    
+    fields = geral_fields.copy()
+    
+    parser = etree.HTMLParser()
+    XPATH_DD = """//*[@id="caracteristicas"]/table"""
+    PRICE = """//*[@id="product-content"]/div[2]/div[1]/div[2]/div/div[3]/div/p/em/strong"""
+    tree = etree.parse(html_page, parser)
+    get_price(fields, PRICE, tree)
+    get_att(fields, XPATH_DD, tree)
+    
+    return fields
+
+def get_fields_ibyte(html_page):
+    
+    def get_price(fields, X_path, tree, verbose=False):
+        path = tree.xpath(X_path)
+        
+        if len(path):
+            fields['price'] = path[0].text.replace("\n", "").replace(" ", "")
+
+    def get_att(fields, X_path, tree):
+        path = tree.xpath(X_path)
+        for row in path:
+            if(len(row) == 3):
+                att = row[1][0].text
+                value  = row[2].text
+                for key in fields.keys():
+                    for key_name in most_frequents[key]:
+                        loss = nomr_l(key_name, att.replace(":", ''))
+                        if loss < 0.2:
+                            fields[key] = value
+                            break
+
+    fields = geral_fields.copy()
+    parser = etree.HTMLParser()
+    XPATH_DD = """//*[@id="descricao"]/table/tbody/tr"""
+
+    PRICE = """//*[@id="product-price-30670"]/span"""
+    PRICE = """/html/body/main/div[8]/section/article/div[1]/div/div[2]/div/form/div[3]/div[1]/div/div/span[1]/span"""
+    tree = etree.parse(html_page, parser)
+    
+    get_price(fields, PRICE, tree)
+    get_att(fields, XPATH_DD, tree)
+
+    return fields
+
+def get_fields_amazon(html_page):
+    
+    def get_price(fields, X_path, tree, verbose=False):
+        path = tree.xpath(X_path)
+        if len(path):
+            fields['price'] = path[0]
+            
+    def get_att(fields, X_path, tree):
+        path = tree.xpath(X_path)
+        for row in path:
+            for key in fields:
+                for key_name in most_frequents[key]:
+                    att = row[0].text#.replace(" ", "")
+                    loss = nomr_l(key_name, att)
+                    
+                    if(loss < 0.3):
+                        value = row[1].text
+                        fields[key] = value
+
+                    
+    fields = geral_fields.copy()
+
+    parser = etree.HTMLParser()
+    XPATH_TABLE1 = """//*[@id="prodDetails"]/div[2]/div[1]/div/div[2]/div/div/table/tbody/tr"""
+    XPATH_TABLE2 = """//*[@id="prodDetails"]/div[2]/div[2]/div/div[2]/div/div/table/tbody/tr"""
+    
+    
+    PRICE = """//*[@id="price"]/table/tr/td/span[1]/text()"""
+    tree = etree.parse(html_page, parser)
+    
+    get_price(fields, PRICE, tree)
+    get_att(fields, XPATH_TABLE1, tree)
+    get_att(fields, XPATH_TABLE2, tree)
+    
+    return fields
+
+def get_fields_taqi(html_page):
+    
+    def get_price(fields, X_path, tree, verbose=False):
+        path = tree.xpath(X_path)
+        if len(path):
+            fields['price'] = path[0].text
+
+    def get_att(fields, X_path, tree):
+        path = tree.xpath(X_path)
+        try:
+            for line in path:
+                sline = line.split(":")
+                if len(sline) == 2:
+                    att, value = sline
+                else:
+                    continue
+
+                if len(value)> 1 and(value[-1] == "."):
+                    value = value[:-1]
+
+                for key in fields:
+                    for key_name in most_frequents[key]:
+                        loss = nomr_l(key_name, att)
+                        if(loss < 0.2):
+                            fields[key] = value
+        except Exception as e: print(e)
+        
+    fields = geral_fields.copy()
+
+    parser = etree.HTMLParser()
+    XPATH_DD = """//*[@id="descricaoproduto"]/div[2]/span/p/span/text()"""
+    PRICE = """//*[@id="lowPrice"]"""
+    tree = etree.parse(html_page, parser)
+
+    get_price(fields, PRICE, tree)
+    get_att(fields, XPATH_DD, tree)
+    
+    return fields
+
+def get_fields_havan(html_page):
+    def get_price(fields, X_path, tree, verbose=False):
+        path = tree.xpath(X_path)
+        if (len(path)):
+            fields['price'] = path[0]
+
+    def get_att(fields, X_path, tree):
+        path = tree.xpath(X_path)
+        try:
+            for line in path:
+                sline = line.split(":")
+                if(len(sline)!=2):continue
+                att, value = sline
+                if(value[-1] == "."):
+                    value = value[:-1]
+
+                for key in fields:
+                    for key_name in most_frequents[key]:
+                        loss = nomr_l(key_name, att)
+                        if(loss < 0.2):
+                            fields[key] = value
+        except Exception as e: print(e)
+
+    
+    fields = geral_fields.copy()
+    
+    parser = etree.HTMLParser()
+    XPATH_DD = """//*[@id="description"]/div/div/text()"""
+    PRICE = """//*[@id="maincontent"]/div[2]/div/div[1]/div[2]/div[3]/span/span/span/text()"""
+    
+    tree = etree.parse(html_page, parser)
+    
+    get_price(fields, PRICE, tree)
+    get_att(fields, XPATH_DD, tree)
+    
+
+    return fields
+
+def get_fields_luiza(html_page):
+
+    def get_price(fields, X_path, tree, verbose=False):
+        path = tree.xpath(X_path)
+
+        if(len(path) >= 2):
+            fields["price"] = "{} {}".format(path[0].text, path[1].text) 
+
+
+    def get_att(fields, X_path, tree):
+        path = tree.xpath(X_path)
+        try:
+            for row in path:
+                for key in fields:
+                    att = row[0].text.replace(" ", "")
+                    for key_name in most_frequents[key]:
+                        loss = nomr_l(key_name, att)
+                        if(loss < 0.3):
+                            value = row[1].text
+                            fields[key] = value
+        except Exception as e: print(e)
+            
+    def get_att2(fields, X_path, tree):
+        path = tree.xpath(X_path)
+        for text in path:
+            split = text.split(':')
+            if len(split) != 2:
+                continue
+            tag, val = split
+            tag = tag.strip()
+            for key in fields:
+                for key_name in most_frequents[key]:
+
+                    loss = nomr_l(key_name, tag)
+                    if loss < 0.4:
+                        fields[key] = val
+
+    
+    fields = geral_fields.copy()
+    
+    parser = etree.HTMLParser()
+    XPATH_TABLE1 = """//*[@id="anchor-description"]/div/table[1]/tr/td/table/tr"""
+    XPATH_TABLE2 = """//*[@id="anchor-description"]/div/table[2]/tr/td/table/tr"""
+    
+    XPATH_TABLE3 = """//*[@id="anchor-description"]/div/p[2]/text()"""
+
+    
+    PRICE = """/html/body/div[3]/div[5]/div[1]/div[4]/div[2]/div[4]/div/div/div/span"""
+    tree = etree.parse(html_page, parser)
+    RAW_TABLE1 = tree.xpath(XPATH_TABLE1)
+    RAW_TABLE2 = tree.xpath(XPATH_TABLE2)
+    
+    get_price(fields, PRICE, tree)
+    get_att(fields, XPATH_TABLE1, tree)
+    get_att(fields, XPATH_TABLE2, tree)
+    get_att2(fields, XPATH_TABLE3, tree)
+    
     return fields
