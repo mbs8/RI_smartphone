@@ -22,20 +22,40 @@ import requests
 from lxml import etree
 import re
 
+most_frequents = {
+    'price':['preço', 'preco'],
+    'model':['modelo', 'Modelos'],
+    'ram':['memoria ram', 'ram', 'memória RAM','Tamanho da memória RAM instalada'],
+    'hd':['armazenamento interno', 'memória interna', 'memoria interna', 'interna', 'Interna total compartilhada',
+          'Memória ROM (Flash) (Armaz. Interno)', 'Memória ROM','Capacidade de armazenamento digital', 'Capacidade de armazenamento da memoria'],
+    'screen':['tamanho da tela', 'tela', 'tamanho do display', 'display', 'tamanho', 'tamanho (tela principal)'],
+}
 
-latin_dict = \
-            {'\\u00e1':'a', '\\u00e0':'a', '\\u00e2':'a', '\\u00e3':'a', '\\u00e4':'a', '\\u00c1':'A', '\\u00c0':'A', 
-             '\\u00c2':'A', '\\u00c3':'A', '\\u00c4':'A', '\\u00e9':'e', '\\u00e8':'e', '\\u00ea':'e', '\\u00ea':'e', 
-             '\\u00c9':'E', '\\u00c8':'E', '\\u00ca':'E', '\\u00cb':'E', '\\u00ed':'i', '\\u00ec':'i', '\\u00ee':'i', 
-             '\\u00ef':'i', '\\u00cd':'I', '\\u00cc':'I', '\\u00ce':'I', '\\u00cf':'I', '\\u00f3':'o', '\\u00f2':'o', 
-             '\\u00f4':'o', '\\u00f5':'o', '\\u00f6':'o', '\\u00d3':'O', '\\u00d2':'O', '\\u00d4':'O', '\\u00d5':'O', 
-             '\\u00d6':'O', '\\u00fa':'u', '\\u00f9':'u', '\\u00fb':'u', '\\u00fc':'u', '\\u00da':'U', '\\u00d9':'U', 
-             '\\u00db':'U', '\\u00e7':'c', '\\u00c7':'C', '\\u00f1':'n', '\\u00d1':'N', '\\u0026':'E', '\\u0027':'\'',
-             'á':'a', 'à':'a', 'â':'a', 'ã':'a', 'ä':'a', 'Á':'A', 'À':'A', 'Â':'A', 'Ã':'A', 'Ä':'A', 'é':'e', 'è':'e', 
-             'ê':'e', 'ê':'e', 'É':'E', 'È':'E', 'Ê':'E', 'Ë':'E', 'í':'i', 'ì':'i', 'î':'i', 'ï':'i', 'Í':'I', 'Ì':'I', 
-             'Î':'I', 'Ï':'I', 'ó':'o', 'ò':'o', 'ô':'o', 'õ':'o', 'ö':'o', 'Ó':'O', 'Ò':'O', 'Ô':'O', 'Õ':'O', 'Ö':'O', 
-             'ú':'u', 'ù':'u', 'û':'u', 'ü':'u', 'Ú':'U', 'Ù':'U', 'Û':'U', 'ç':'c', 'Ç':'C', 'ñ':'n', 'Ñ':'N', '&':'E'}
+geral_fields = {
+            'price':'',
+            'model':'',
+            'ram':'',
+            'hd':'',
+            'screen':'',
+    }
 
+
+def to_ascii(string):
+    latin_dict = \
+        {'\\u00e1':'a', '\\u00e0':'a', '\\u00e2':'a', '\\u00e3':'a', '\\u00e4':'a', '\\u00c1':'A', '\\u00c0':'A', 
+         '\\u00c2':'A', '\\u00c3':'A', '\\u00c4':'A', '\\u00e9':'e', '\\u00e8':'e', '\\u00ea':'e', '\\u00ea':'e', 
+         '\\u00c9':'E', '\\u00c8':'E', '\\u00ca':'E', '\\u00cb':'E', '\\u00ed':'i', '\\u00ec':'i', '\\u00ee':'i', 
+         '\\u00ef':'i', '\\u00cd':'I', '\\u00cc':'I', '\\u00ce':'I', '\\u00cf':'I', '\\u00f3':'o', '\\u00f2':'o', 
+         '\\u00f4':'o', '\\u00f5':'o', '\\u00f6':'o', '\\u00d3':'O', '\\u00d2':'O', '\\u00d4':'O', '\\u00d5':'O', 
+         '\\u00d6':'O', '\\u00fa':'u', '\\u00f9':'u', '\\u00fb':'u', '\\u00fc':'u', '\\u00da':'U', '\\u00d9':'U', 
+         '\\u00db':'U', '\\u00e7':'c', '\\u00c7':'C', '\\u00f1':'n', '\\u00d1':'N', '\\u0026':'E', '\\u0027':'\'',
+         'á':'a', 'à':'a', 'â':'a', 'ã':'a', 'ä':'a', 'Á':'A', 'À':'A', 'Â':'A', 'Ã':'A', 'Ä':'A', 'é':'e', 'è':'e', 
+         'ê':'e', 'ê':'e', 'É':'E', 'È':'E', 'Ê':'E', 'Ë':'E', 'í':'i', 'ì':'i', 'î':'i', 'ï':'i', 'Í':'I', 'Ì':'I', 
+         'Î':'I', 'Ï':'I', 'ó':'o', 'ò':'o', 'ô':'o', 'õ':'o', 'ö':'o', 'Ó':'O', 'Ò':'O', 'Ô':'O', 'Õ':'O', 'Ö':'O', 
+         'ú':'u', 'ù':'u', 'û':'u', 'ü':'u', 'Ú':'U', 'Ù':'U', 'Û':'U', 'ç':'c', 'Ç':'C', 'ñ':'n', 'Ñ':'N', '&':'E'}
+    for key in latin_dict:
+        string = string.replace(key, latin_dict[key])
+    return string
 
 def levenshtein(word1, word2):
     """
@@ -45,8 +65,10 @@ def levenshtein(word1, word2):
     :param word2:
     :return:
     """
-    word2 = word2.lower()
-    word1 = word1.lower()
+    word2 = to_ascii(word2.lower())
+    word1 = to_ascii(word1.lower())
+    
+    
     matrix = [[0 for x in range(len(word2) + 1)] for x in range(len(word1) + 1)]
 
     for x in range(len(word1) + 1):
@@ -98,24 +120,6 @@ def np_to_dict(table, fields_dict):
             #print(nomr_l(key, cols[0]), key, cols[0])
     return new_dict
 
-
-most_frequents = {
-    'price':['preço', 'preco'],
-    'model':['modelo', 'Modelos compatíveis'],
-    'ram':['memoria ram', 'ram', 'memória RAM','Tamanho da memória RAM instalada'],
-    'hd':['armazenamento interno', 'memória interna', 'memoria interna', 'interna', 'Interna total compartilhada',
-          'Memória ROM (Flash) (Armaz. Interno)', 'Memória ROM','Capacidade de armazenamento digital'],
-    'screen':['tamanho da tela', 'tela', 'tamanho do display', 'display', 'tamanho', 'tamanho (tela principal)'],
-}
-
-geral_fields = {
-            'price':'',
-            'model':'',
-            'ram':'',
-            'hd':'',
-            'screen':'',
-    }
-
 def get_fields_kabum(html_page):
 
     def get_price(fields, X_path, tree, verbose=False):
@@ -140,7 +144,7 @@ def get_fields_kabum(html_page):
                     for key in most_frequents.keys():
                         for key_name in most_frequents[key]:
                             loss = nomr_l(key_name, attrib)
-                            if loss < 0.4:
+                            if loss < 0.3:
                                 fields[key] = value.replace("\"", "").replace("\'", "")
                                 break
         #return fields
@@ -351,12 +355,12 @@ def get_fields_amazon(html_page):
     def get_att(fields, X_path, tree):
         path = tree.xpath(X_path)
         for row in path:
+            att = row[0].text#.replace(" ", "")
             for key in fields:
                 for key_name in most_frequents[key]:
-                    att = row[0].text#.replace(" ", "")
                     loss = nomr_l(key_name, att)
                     
-                    if(loss < 0.3):
+                    if(loss < 0.2):
                         value = row[1].text
                         fields[key] = value
 
