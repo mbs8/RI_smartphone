@@ -11,7 +11,7 @@ from html.parser import HTMLParser
 import re
 from tqdm import tqdm
 import glob
-#from utils import *
+from utils import *
 import pathlib
 from sklearn.pipeline import Pipeline
 from sklearn.naive_bayes import MultinomialNB
@@ -163,7 +163,7 @@ def get_fields_kabum(html_page):
     return fields
 
 
-def get_fields_ricardo(html_page):
+def get_fields_ricardoeletro(html_page):
     
     def get_price(fields, X_path, tree, verbose=False):
 
@@ -230,7 +230,6 @@ def get_fields_colombo(html_page):
         
         for idx, p in enumerate(att_path):
             p = p.strip()
-            print(p)
             if idx % 2 == 0:
                 for key in fields.keys():
                     loss = nomr_l(p, key)
@@ -455,7 +454,7 @@ def get_fields_havan(html_page):
 
     return fields
 
-def get_fields_luiza(html_page):
+def get_fields_magazineluiza(html_page):
 
     def get_price(fields, X_path, tree, verbose=False):
         path = tree.xpath(X_path)
