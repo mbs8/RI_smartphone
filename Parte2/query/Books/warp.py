@@ -11,7 +11,6 @@ from html.parser import HTMLParser
 import re
 from tqdm import tqdm
 import glob
-from utils import *
 import pathlib
 from sklearn.pipeline import Pipeline
 from sklearn.naive_bayes import MultinomialNB
